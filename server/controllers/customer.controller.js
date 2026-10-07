@@ -2,6 +2,17 @@ import bcrypt from "bcrypt";
 import Customer from "../models/customer.model.js";
 import generateToken from "../utils/generateToken.js";
 
+// In production the frontend (Vercel) and backend (Render) are different sites,
+// so the cookie must be SameSite=None + Secure to be sent cross-site.
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  path: "/",
+};
+
 export const registerCustomer = async (req, res) => {
   try {
     const { fullName, email, password, phone } = req.body;
@@ -88,9 +99,7 @@ export const loginCustomer = async (req, res) => {
     const token = generateToken(customer._id);
 
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      ...cookieOptions,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -116,11 +125,7 @@ export const getProfile = async (req, res) => {
 };
 
 export const logoutCustomer = async (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
+  res.clearCookie("token", cookieOptions);
 
   return res.status(200).json({
     success: true,
