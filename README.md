@@ -467,35 +467,6 @@ Go to `http://localhost:5173`, register an account and start shopping.
 
 ---
 
-## Environment Variables
-
-### Backend (`server/.env`, and Render in production)
-
-| Variable | Local value | Production value (Render) |
-|---|---|---|
-| `PORT` | `3000` | Do not set; Render provides it |
-| `MONGO_URI` | `mongodb://localhost:27017/shopkart` | MongoDB Atlas connection string ending in `/shopkart?...` |
-| `JWT_SECRET` | Any long random string | A different long random string |
-| `NODE_ENV` | `development` | `production` |
-| `RAZORPAY_KEY_ID` | `rzp_test_...` | `rzp_test_...` |
-| `RAZORPAY_KEY_SECRET` | Your test secret | Your test secret |
-| `CLIENT_ORIGIN` | Leave unset (any localhost port is allowed) | `https://shopkart-chi-rouge.vercel.app` |
-
-### Frontend (`client_frontend/.env`, and Vercel in production)
-
-| Variable | Local value | Production value (Vercel) |
-|---|---|---|
-| `VITE_API_URL` | `http://localhost:3000` | `https://shopkart-api-wcg9.onrender.com` |
-
-Generate a strong JWT secret:
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-```
-
-> **Never commit `.env` files.** Both are listed in `.gitignore`. Only the `.env.example` templates are committed. Secrets such as `MONGO_URI`, `JWT_SECRET` and `RAZORPAY_KEY_SECRET` belong only on the backend, never in Vercel.
-
----
-
 ## Deployment
 
 The whole stack runs on free plans.
